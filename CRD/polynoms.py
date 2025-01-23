@@ -48,6 +48,8 @@ class Polynom:
         for i in reversed(self.coef):
             if not i.val:
                 self.coef.pop()
+            else:
+                break
         return self
 
     def compute(self, n: Galois) -> Galois:

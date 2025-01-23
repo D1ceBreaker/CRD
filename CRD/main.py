@@ -17,17 +17,15 @@ def encrypt(message: Polynom, gen: Polynom) -> Polynom:
     tmp = [Galois() for _ in range(len(gen.coef))]
     tmp[-1] = Galois(1)
     tmp_poly = Polynom(tmp)
-    # shift polynom by n
     message *= tmp_poly
 
     q, r = message.divide_by(gen)
+    print(q)
     message += r
-    #print(message)
+    print(message)
     return message
 
 a = Polynom.make_poly("DON'T PANIC")
 b = polynom_generator(4)
-print("DON'T PANIC: ", a)
-print("Polynom gen 4: ", b)
-c, d = a.divide_by(b)
-print("Rem: ", d)
+e = encrypt(a, b)
+print(e)
