@@ -82,6 +82,17 @@ class Polynom:
             tmp.discard_zeroes()
             dividend = tmp.coef
 
+    def derivative(self) -> 'Polynom':
+        if len(self.coef) == 1:
+            return Polynom([Galois()])
+        coef = []
+        for i in range(len(self.coef)):
+            if i % 2 == 0:
+                coef.append(Galois())
+            else:
+                coef.append(self.coef[i])
+        return Polynom(coef[1:])
+
 
     @staticmethod
     def make_poly(data: str) -> 'Polynom':
@@ -89,4 +100,3 @@ class Polynom:
         for i in data:
             coef.append(Galois(ord(i)))
         return Polynom(coef)
-

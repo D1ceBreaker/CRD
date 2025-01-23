@@ -69,7 +69,7 @@ class Galois:
     def __sub__(self, other):
         return Galois(self.val ^ other.val)
 
-    def fpow(self): #find power
+    def fpow(self):  #find power
         return map[self.val]
 
     def __mul__(self, other):
@@ -81,15 +81,21 @@ class Galois:
     def __truediv__(self, other):
         p1 = self.fpow()
         p2 = other.fpow()
-        p3 = 255 - ((p2 - p1) % 255) if (p1 - p2 > 0) else (p1-p2) % 255
+        p3 = 255 - ((p2 - p1) % 255) if (p1 - p2 > 0) else (p1 - p2) % 255
         return Galois(table[p3])
 
     def power(self, n: int):
-        if n == 0: return 1
+        if n == 0: return Galois(1)
         res = self
         for i in range(n - 1):
             res = res * self
         return res
 
+    def log(self):
+        if self.val == 1: return Galois(0)
+        for i in range(256):
+            if Galois(2).power(i).val == self.val:
+                return Galois(i)
+        print("COuldnt")
     def __str__(self):
         return str(self.val)
