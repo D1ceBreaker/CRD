@@ -5,25 +5,25 @@ from typing import List
 
 class Polynom:
     def __init__(self, data: List[Galois]):
-        self.coef = data
+        self.coef: List[Galois] = data
 
     def __str__(self):
-        line = ""
-        for i, c in enumerate(self.coef):
+        line: str = ""
+        for pos, coefficient in enumerate(self.coef):
             #line += f"{c} "
-            line += f"{hex(c.val)[2:].upper()} "
+            line += f"{hex(coefficient.val)[2:].upper()} "
         line += "\n"
         return line
 
     def message(self) -> str:
-        message = ""
+        message: str = ""
         for i in self.coef:
             message += chr(i.val) if i.val != 0 else ""
         return message
 
     def __add__(self, other):
-        l1 = len(self.coef)
-        l2 = len(other.coef)
+        l1: int = len(self.coef)
+        l2: int = len(other.coef)
         if l1 > l2:
             other.coef = other.coef + [Galois() for i in range(l1 - l2)]
         else:
@@ -35,10 +35,10 @@ class Polynom:
         return Polynom(new)
 
     def __mul__(self, other):
-        l1 = len(self.coef)
-        l2 = len(other.coef)
-        new_len = l1 + l2 - 1
-        new_coef = [Galois() for i in range(new_len)]
+        l1: int = len(self.coef)
+        l2: int = len(other.coef)
+        new_len: int = l1 + l2 - 1
+        new_coef: List[Galois] = [Galois() for _ in range(new_len)]
         for i, el1 in enumerate(self.coef):
             for j, el2 in enumerate(other.coef):
                 new_coef[i + j] += (el1 * el2)
@@ -61,8 +61,8 @@ class Polynom:
         return s
 
     def divide_by(self, other: 'Polynom') -> ('Polynom', 'Polynom'):
-        dividend = self.coef
-        divisor = other.coef
+        dividend: List[Galois] = self.coef
+        divisor: List[Galois] = other.coef
 
         quotient = [Galois() for i in range(len(dividend))]
 
@@ -76,8 +76,10 @@ class Polynom:
 
             division = dividend[-1] / main_div
             quotient[power] = division
+
             tmp_coef = [Galois() for _ in range(power + 1)]
             tmp_coef[power] = division
+
             tmp = Polynom(tmp_coef) * other + Polynom(dividend)
             tmp.discard_zeroes()
             dividend = tmp.coef
@@ -85,7 +87,7 @@ class Polynom:
     def derivative(self) -> 'Polynom':
         if len(self.coef) == 1:
             return Polynom([Galois()])
-        coef = []
+        coef: List[Galois] = []
         for i in range(len(self.coef)):
             if i % 2 == 0:
                 coef.append(Galois())
@@ -96,7 +98,7 @@ class Polynom:
 
     @staticmethod
     def make_poly(data: str) -> 'Polynom':
-        coef = []
+        coef: List[Galois] = []
         for i in data:
             coef.append(Galois(ord(i)))
         return Polynom(coef)
