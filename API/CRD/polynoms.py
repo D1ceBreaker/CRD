@@ -1,4 +1,4 @@
-from ops import Galois
+from .ops import Galois
 from typing import List
 
 

@@ -1,7 +1,7 @@
 from typing import List
-
-from polynoms import Polynom
-from ops import Galois
+from random import randint
+from .polynoms import Polynom
+from .ops import Galois
 
 
 def polynom_generator(n: int) -> Polynom:
@@ -15,7 +15,9 @@ def polynom_generator(n: int) -> Polynom:
     return res
 
 
-def encrypt(message: Polynom, gen: Polynom) -> Polynom:
+def encrypt(message: Polynom, n: int) -> Polynom:
+    """Encrypt the message using n additional bytes"""
+    gen = polynom_generator(n)
     tmp = [Galois() for _ in range(len(gen.coefficients))]
     tmp[-1] = Galois(1)
     tmp_poly = Polynom(tmp)
@@ -33,6 +35,8 @@ def syndrom_polynom(enc: Polynom, n: int):
 
 
 def locator_polynom(errors: List[int]) -> Polynom:
+    if len(errors) == 0:
+        return Polynom([Galois()])
     array = [Polynom([Galois(1), Galois(2).power(i)]) for i in errors]
     res = array[0]
     for i in range(1, len(array)):
@@ -46,6 +50,8 @@ def error_polynom(syndrome: Polynom, locator: Polynom, n: int):
 
 
 def magnitudes(syndrome: Polynom, errors: List[int], n: int):
+    if len(errors) == 0:
+        return Polynom([Galois()])
     locator = locator_polynom(errors)
     err = error_polynom(syndrome, locator, n)
     loc_der = locator.derivative()
@@ -94,6 +100,7 @@ def pos_errors(locator: Polynom) -> List[int]:
 
 
 def decrypt(message: Polynom, n: int):
+    """Decrypt the message without any knowledge of possible errors"""
     syndrome = syndrom_polynom(message, n)
     location = find_errors(syndrome, n)
     errors = pos_errors(location)
@@ -103,10 +110,27 @@ def decrypt(message: Polynom, n: int):
     return Polynom(message.coefficients[n:])
 
 
-a = Polynom.make_poly("DON'T PANIC")
-b = polynom_generator(4)
-e = encrypt(a, b)
-e.coefficients[6] = Galois(ord("A"))
-e.coefficients[13] = Galois(ord("A"))
+def environment(message: Polynom, probability: int):
+    """Transmit the message through unstable environment with certain probability to change each char"""
+    distorted_coefficients = [Galois() for _ in range(len(message.coefficients))]
+    if probability < 0 or probability > 100:
+        raise AttributeError("probability out of bounds")
+    for i, el in enumerate(message.coefficients):
+        chance = randint(0, 100)
+        distorted_coefficients[i] = el
+        if chance <= probability:
+            distorted_coefficients[i] += Galois(randint(1, 255))
 
-print(decrypt(e, 4).message())
+    return Polynom(distorted_coefficients)
+
+
+def compute_accuracy(original: Polynom, batch: int, additional: int, probability: int) -> float:
+    acc = 0
+    for i in range(batch):
+        encrypted: Polynom = encrypt(original, additional)
+        distorted: Polynom = environment(encrypted, probability)
+
+        decrypted: Polynom = decrypt(distorted, additional)
+        if decrypted.message() != original.message():
+            acc += 1
+    return acc / batch
