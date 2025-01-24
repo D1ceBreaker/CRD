@@ -69,7 +69,7 @@ class Galois:
     def __sub__(self, other):
         return Galois(self.val ^ other.val)
 
-    def fpow(self):  #find power
+    def fpow(self):  # find power
         return map[self.val]
 
     def __mul__(self, other):
@@ -96,6 +96,7 @@ class Galois:
         for i in range(256):
             if Galois(2).power(i).val == self.val:
                 return Galois(i)
-        print("COuldnt")
+        print("Couldn't")
+
     def __str__(self):
         return str(self.val)

@@ -16,7 +16,7 @@ def polynom_generator(n: int) -> Polynom:
 
 
 def encrypt(message: Polynom, gen: Polynom) -> Polynom:
-    tmp = [Galois() for _ in range(len(gen.coef))]
+    tmp = [Galois() for _ in range(len(gen.coefficients))]
     tmp[-1] = Galois(1)
     tmp_poly = Polynom(tmp)
     message *= tmp_poly
@@ -40,14 +40,14 @@ def locator_polynom(errors: List[int]) -> Polynom:
     return res
 
 
-def error_polynom(syndrom: Polynom, locator: Polynom, n: int):
-    res = syndrom * locator
-    return Polynom(res.coef[:n])
+def error_polynom(syndrome: Polynom, locator: Polynom, n: int):
+    res = syndrome * locator
+    return Polynom(res.coefficients[:n])
 
 
-def magnitudes(syndrom: Polynom, errors: List[int], n: int):
+def magnitudes(syndrome: Polynom, errors: List[int], n: int):
     locator = locator_polynom(errors)
-    err = error_polynom(syndrom, locator, n)
+    err = error_polynom(syndrome, locator, n)
     loc_der = locator.derivative()
 
     mag = [Galois() for i in range(max(errors) + 1)]
@@ -60,21 +60,21 @@ def magnitudes(syndrom: Polynom, errors: List[int], n: int):
     return Polynom(mag)
 
 
-def find_errors(syndrom: Polynom, n: int):
+def find_errors(syndrome: Polynom, n: int):
     locator = Polynom([Galois(1)])
     prev_locator = Polynom([Galois(1)])
     shift = 0
 
     for i in range(n):
         k = i + shift
-        delta = syndrom.coef[k]
+        delta = syndrome.coefficients[k]
 
-        for j in range(1, len(locator.coef)):
-            delta += locator.coef[j] * syndrom.coef[k - j]
+        for j in range(1, len(locator.coefficients)):
+            delta += locator.coefficients[j] * syndrome.coefficients[k - j]
         prev_locator *= Polynom([Galois(0), Galois(1)])
 
         if delta.val != 0:
-            if len(prev_locator.coef) > len(locator.coef):
+            if len(prev_locator.coefficients) > len(locator.coefficients):
                 new_locator = prev_locator * Polynom([delta])
                 prev_locator = locator * Polynom([Galois(1) / delta])
                 locator = new_locator
@@ -94,19 +94,19 @@ def pos_errors(locator: Polynom) -> List[int]:
 
 
 def decrypt(message: Polynom, n: int):
-    syndrom = syndrom_polynom(message, n)
-    location = find_errors(syndrom, n)
+    syndrome = syndrom_polynom(message, n)
+    location = find_errors(syndrome, n)
     errors = pos_errors(location)
     errors.sort()
-    mag = magnitudes(syndrom, errors, n)
+    mag = magnitudes(syndrome, errors, n)
     message += mag
-    return Polynom(message.coef[n:])
+    return Polynom(message.coefficients[n:])
 
 
 a = Polynom.make_poly("DON'T PANIC")
 b = polynom_generator(4)
 e = encrypt(a, b)
-e.coef[6] = Galois(ord("A"))
-e.coef[13] = Galois(ord("A"))
+e.coefficients[6] = Galois(ord("A"))
+e.coefficients[13] = Galois(ord("A"))
 
 print(decrypt(e, 4).message())
