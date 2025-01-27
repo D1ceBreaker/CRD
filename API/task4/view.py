@@ -7,5 +7,5 @@ router = APIRouter(tags=["task4"])
 
 @router.post("/", response_model=Response)
 async def task3(parameters: Data):
-    res = isDecryptable(parameters.a, parameters.b, parameters.c)
-    return Response(is_decrypted=res)
+    res, original, encoded, corrupted, decoded = isDecryptable(parameters.a, parameters.b, parameters.c)
+    return Response(is_decrypted=res, original=original, encoded=encoded, corrupted=corrupted, decoded=decoded)

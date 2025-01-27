@@ -4,7 +4,7 @@ from random import randint
 
 
 
-def isDecryptable(a: int, b: int, c: int) -> bool:
+def isDecryptable(a: int, b: int, c: int) -> (bool, str, str, str, str):
 
     polynom: Polynom = generate(a)
 
@@ -13,7 +13,7 @@ def isDecryptable(a: int, b: int, c: int) -> bool:
 
     decrypted: Polynom = decrypt(distorted, b)
 
-    return decrypted.message() == polynom.message()
+    return decrypted.message() == polynom.message(), polynom.message(), encrypted.message(), distorted.message(), decrypted.message()
 
 
 def generate(length: int) -> 'Polynom':

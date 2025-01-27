@@ -7,5 +7,5 @@ router3 = APIRouter(tags=["task3"])
 
 @router3.post("/", response_model=Response)
 async def task3(parameters: Data):
-    a, d = plot(parameters.a1, parameters.a2, parameters.b, parameters.c)
-    return Response(a=a, d=d)
+    a, d, original, encoded, corrupted, decoded, batch = plot(parameters.a1, parameters.a2, parameters.b, parameters.c)
+    return Response(a=a, d=d, original=original, encoded=encoded, corrupted=corrupted, decoded=decoded, batch=batch)
