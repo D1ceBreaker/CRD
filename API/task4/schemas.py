@@ -11,10 +11,10 @@ class Data(BaseModel):
 
 class ResponseBase(BaseModel):
     is_decrypted: bool
-    original: str
-    encoded: str
-    corrupted: str
-    decoded: str
+    original: List[str]
+    encoded: List[str]
+    corrupted: List[str]
+    decoded: List[str]
 
 
 class Response(ResponseBase):

@@ -1,10 +1,12 @@
+from typing import List
+
 from ..CRD.polynoms import Polynom, Galois
 from ..CRD.main import encrypt, decrypt, environment
 from random import randint
 
 
 
-def isDecryptable(a: int, b: int, c: int) -> (bool, str, str, str, str):
+def isDecryptable(a: int, b: int, c: int) -> (bool, List[str], List[str], List[str], List[str]):
 
     polynom: Polynom = generate(a)
 
@@ -13,7 +15,7 @@ def isDecryptable(a: int, b: int, c: int) -> (bool, str, str, str, str):
 
     decrypted: Polynom = decrypt(distorted, b)
 
-    return decrypted.message() == polynom.message(), polynom.message(), encrypted.message(), distorted.message(), decrypted.message()
+    return decrypted.message() == polynom.message(), [polynom.message()], [encrypted.message()], [distorted.message()], [decrypted.message()]
 
 
 def generate(length: int) -> 'Polynom':
