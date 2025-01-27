@@ -118,7 +118,7 @@ def environment(message: Polynom, probability: int):
     for i, el in enumerate(message.coefficients):
         chance = randint(0, 100)
         distorted_coefficients[i] = el
-        if chance <= probability:
+        if chance < probability:
             distorted_coefficients[i] += Galois(randint(1, 255))
 
     return Polynom(distorted_coefficients)

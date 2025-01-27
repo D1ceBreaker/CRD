@@ -13,6 +13,11 @@ class Data(BaseModel):
 class ResponseBase(BaseModel):
     a: List[int]
     d: List[float]
+    original: List[str]
+    encoded: List[str]
+    corrupted: List[str]
+    decoded: List[str]
+    batch: int
 
 
 class Response(ResponseBase):
